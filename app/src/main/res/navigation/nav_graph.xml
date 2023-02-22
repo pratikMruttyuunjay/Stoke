@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/ProductFragment">
+
+    <fragment
+        android:id="@+id/ProductFragment"
+        android:name="com.mruttyuunjay.stoke.screens.ProductFragment"
+        android:label="product_fragment"
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_ProductFragment_to_AddFragment"
+            app:destination="@id/AddFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CategoryFragment"
+        android:name="com.mruttyuunjay.stoke.screens.CategoryFragment"
+        android:label="second_fragment"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_CategoryFragment_to_AddFragment"
+            app:destination="@id/AddFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/AddFragment"
+        android:name="com.mruttyuunjay.stoke.screens.AddFragment"
+        android:label="fragment_product_add"
+        tools:layout="@layout/fragment_add" />
+    <fragment
+        android:id="@+id/BatchFragment"
+        android:name="com.mruttyuunjay.stoke.screens.batch.BatchFragment"
+        android:label="fragment_batch"
+        tools:layout="@layout/fragment_batch" >
+        <action
+            android:id="@+id/action_BatchFragment_to_AddFragment"
+            app:destination="@id/AddFragment" />
+    </fragment>
+</navigation>

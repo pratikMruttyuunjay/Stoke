@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ProductFragment"
+        android:icon="@drawable/baseline_auto_awesome_mosaic_24"
+        android:title="Product" />
+
+    <item
+        android:id="@+id/CategoryFragment"
+        android:icon="@drawable/baseline_category_24"
+        android:title="Categories" />
+
+    <item
+        android:id="@+id/BatchFragment"
+        android:icon="@drawable/baseline_auto_awesome_motion_24"
+        android:title="Batch Fragment" />
+
+</menu>
