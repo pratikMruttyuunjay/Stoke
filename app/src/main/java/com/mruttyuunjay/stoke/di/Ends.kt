@@ -98,7 +98,7 @@ interface Ends {
     @POST(Constants.ROOT)
     suspend fun postAddQty(
         @Field("action") action: String,
-        @Field("batch_id") batch_id: String ,
+        @Field("batch_id") batch_id: String,
         @Field("qty") qty: String,
     ): Response<AddQty>
 

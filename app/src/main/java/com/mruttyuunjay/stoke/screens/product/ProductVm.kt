@@ -22,9 +22,6 @@ class ProductVm @Inject constructor(
     private var _productList = MutableLiveData<Resource<ProductList>>()
     val productList = _productList
 
-    private var _productAdd = MutableLiveData<Resource<ProductAdd>>()
-    val productAdd = _productAdd
-
     private var _productUpdate = MutableLiveData<Resource<ProductUpdate>>()
     val productUpdate = _productUpdate
 

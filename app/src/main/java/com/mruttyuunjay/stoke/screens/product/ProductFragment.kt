@@ -1,8 +1,8 @@
-package com.mruttyuunjay.stoke.screens
+package com.mruttyuunjay.stoke.screens.product
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.mruttyuunjay.stoke.databinding.FragmentProductBinding
 import com.mruttyuunjay.stoke.databinding.LayoutUpdateBinding
-import com.mruttyuunjay.stoke.screens.product.ProductEvents
-import com.mruttyuunjay.stoke.screens.product.ProductListingAdapter
-import com.mruttyuunjay.stoke.screens.product.ProductVm
 import com.mruttyuunjay.stoke.utils.Resource
+import com.mruttyuunjay.stoke.utils.UiHelper
 import com.mruttyuunjay.stoke.utils.navigateToAdd
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,25 +41,14 @@ class ProductFragment : Fragment() {
         binding.add.setOnClickListener {
             navigateToAdd()
         }
-        binding.add.setOnLongClickListener {
-            updateDialog(
-                onSuccess = {
-
-                },
-                onDismiss = {
-
-                }
-            )
-            return@setOnLongClickListener true
-        }
 
         productAdapter = ProductListingAdapter({ onClick ->
-
-//            navigateToProductAddOrUpdate(productTitle = onClick.title, productId = onClick.id)
         }) { onLongClick ->
-            updateDialog(
-                onSuccess = {
-
+            UiHelper.updateDialog(
+                context = requireActivity(),
+                from = UiHelper.updateFrom.Product,
+                onUpdateClick = { title,dialog ->
+                    updateProduct(productId = onLongClick.id, title = title, dialog = dialog )
                 },
                 onDismiss = {
 
@@ -97,40 +84,29 @@ class ProductFragment : Fragment() {
         }
     }
 
-    private fun updateDialog(
-        productId: String? = null,
-        categoryId: String? = null,
-        batchId: String? = null,
-        onSuccess: () -> Unit,
-        onDismiss: () -> Unit
-    ) {
+    private fun updateProduct(productId:String,title:String,dialog: Dialog){
+        if (vm.productUpdate.value == null) vm.onEvent(ProductEvents.PostProductUpdate(product_id = productId, title = title))
 
-        val dialog = Dialog(requireContext())
-
-        /*              For full screen dialog
-        com.google.android.material.R.style.Theme_Material3_Light_BottomSheetDialog
-        */
-
-        val vb = LayoutUpdateBinding.inflate(LayoutInflater.from(context))
-
-        vb.toolbarHeading.text = "Update"
-        vb.addBtn.text = "Update"
-        vb.back.setOnClickListener {
-            onDismiss.invoke()
-            dialog.dismiss()
+        vm.productUpdate.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    response.data?.let {
+//                        UiHelper.loadingDialogBuilder.dismissSafe()
+                        dialog.dismiss()
+                        vm.productList.value = null
+                        initFetch()
+                    }
+                }
+                is Resource.Error -> {
+//                    UiHelper.loadingDialogBuilder.dismissSafe()
+                    Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is Resource.Loading -> {
+//                    UiHelper.loadingDialog(requireContext())
+                }
+            }
         }
-
-        dialog.setContentView(vb.root)
-
-        // Set the dialog window attributes
-        val layoutParams = WindowManager.LayoutParams()
-        layoutParams.copyFrom(dialog.window?.attributes)
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
-        dialog.window?.attributes = layoutParams
-
-        dialog.setCancelable(true)
-        dialog.show()
     }
 
     override fun onDestroyView() {

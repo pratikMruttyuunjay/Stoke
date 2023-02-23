@@ -3,11 +3,10 @@ package com.mruttyuunjay.stoke.utils
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.mruttyuunjay.stoke.R
-import com.mruttyuunjay.stoke.screens.CategoryFragment
-import com.mruttyuunjay.stoke.screens.ProductFragment
+import com.mruttyuunjay.stoke.screens.category.CategoryFragment
+import com.mruttyuunjay.stoke.screens.product.ProductFragment
 import com.mruttyuunjay.stoke.screens.batch.BatchFragment
 
 

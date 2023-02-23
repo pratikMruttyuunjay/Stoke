@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/ProductFragment"
-        android:name="com.mruttyuunjay.stoke.screens.ProductFragment"
+        android:name="com.mruttyuunjay.stoke.screens.product.ProductFragment"
         android:label="product_fragment"
         tools:layout="@layout/fragment_product">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/CategoryFragment"
-        android:name="com.mruttyuunjay.stoke.screens.CategoryFragment"
+        android:name="com.mruttyuunjay.stoke.screens.category.CategoryFragment"
         android:label="second_fragment"
         tools:layout="@layout/fragment_category">
         <action

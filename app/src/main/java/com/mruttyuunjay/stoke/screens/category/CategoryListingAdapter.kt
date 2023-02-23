@@ -1,21 +1,21 @@
-package com.mruttyuunjay.stoke.screens.product
+package com.mruttyuunjay.stoke.screens.category
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mruttyuunjay.stoke.databinding.ItemRvProductBinding
-import com.mruttyuunjay.stoke.dto.product.ProductList
-import com.mruttyuunjay.stoke.dto.product.ProductListData
+import com.mruttyuunjay.stoke.dto.category.CategoryList
+import com.mruttyuunjay.stoke.dto.category.CategoryListData
 import com.mruttyuunjay.stoke.utils.CommonDiff
 
 
-class ProductListingAdapter(
-    private val onClick: (ProductListData) -> Unit,
-    private val onLongClick: (ProductListData) -> Unit,
-) : RecyclerView.Adapter<ProductListingAdapter.ViewHolder>() {
+class CategoryListingAdapter(
+    private val onClick: (CategoryListData) -> Unit,
+    private val onLongClick: (CategoryListData) -> Unit,
+) : RecyclerView.Adapter<CategoryListingAdapter.ViewHolder>() {
 
-    var mList: ArrayList<ProductListData> = ArrayList()
+    var mList: ArrayList<CategoryListData> = ArrayList()
 
     inner class ViewHolder(val binding: ItemRvProductBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -50,7 +50,7 @@ class ProductListingAdapter(
         return mList.size
     }
 
-    fun setCommonData(newData: ProductList) {
+    fun setCommonData(newData: CategoryList) {
 
         val movieDiffUtil = CommonDiff(mList, newData.data)
 

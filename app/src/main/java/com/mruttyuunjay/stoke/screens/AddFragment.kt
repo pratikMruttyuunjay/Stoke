@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mruttyuunjay.stoke.R
 import com.mruttyuunjay.stoke.databinding.FragmentAddBinding
 import com.mruttyuunjay.stoke.dto.category.CategoryListData
@@ -19,8 +20,7 @@ import com.mruttyuunjay.stoke.dto.product.ProductList
 import com.mruttyuunjay.stoke.dto.product.ProductListData
 import com.mruttyuunjay.stoke.screens.category.CategoryEvents
 import com.mruttyuunjay.stoke.screens.category.CategoryVm
-import com.mruttyuunjay.stoke.screens.product.ProductEvents
-import com.mruttyuunjay.stoke.screens.product.ProductVm
+import com.mruttyuunjay.stoke.screens.product.*
 import com.mruttyuunjay.stoke.utils.Resource
 import com.mruttyuunjay.stoke.utils.getEnum
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +55,9 @@ class AddFragment : Fragment() {
         val aPId = arguments?.getString("productId") ?: ""
         val aFrom = arguments?.getInt("from")        /*  1 = Product , 2 = Category , 3 = Batch  */
 
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.apply {
 
@@ -85,34 +88,36 @@ class AddFragment : Fragment() {
                 }
             }
             titleValue.setText(aPTitle)
+
             categoryValue.keyListener = null
             productValue.keyListener = null
 
-            productValue.apply {
+//            productValue.apply {
+//
+//                ArrayAdapter(
+//                    requireContext(),
+//                    R.layout.simple_text_drop_down,
+//                    productList /* resources.getStringArray(R.array.PerList)*/
+//                ).also {
+//                    this.setAdapter(it)
+//                    this.setDropDownBackgroundResource(R.color.white)
+//
+//                    onItemClickListener =
+//                        AdapterView.OnItemClickListener { parent, _, position, _ ->
+//                            val selected = parent.adapter.getItem(position).toString()
+//                            category = selected
+//                        }
+//                }
+//
+//            }
 
-                ArrayAdapter(
-                    requireContext(),
-                    R.layout.simple_text_drop_down,
-                    productList /* resources.getStringArray(R.array.PerList)*/
-                ).also {
-                    this.setAdapter(it)
-                    this.setDropDownBackgroundResource(R.color.white)
-
-                    onItemClickListener =
-                        AdapterView.OnItemClickListener { parent, _, position, _ ->
-                            val selected = parent.adapter.getItem(position).toString()
-                            category = selected
-                        }
-                }
-
-            }
-
+//            val adapterr = CustomArrayAdapter(requireContext(),categoryList)
+            val list = categoryList.map { it.title }.toList()
             categoryValue.apply {
-
                 ArrayAdapter(
                     requireContext(),
                     R.layout.simple_text_drop_down,
-                    categoryList /* resources.getStringArray(R.array.PerList)*/
+                    list /*resources.getStringArray(R.array.PerList)*/
                 ).also {
                     this.setAdapter(it)
                     this.setDropDownBackgroundResource(R.color.white)
@@ -123,6 +128,7 @@ class AddFragment : Fragment() {
                             category = selected
                         }
                 }
+
             }
         }
     }

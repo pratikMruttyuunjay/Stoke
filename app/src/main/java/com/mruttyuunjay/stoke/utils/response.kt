@@ -25,10 +25,6 @@ fun <T> response (response: Response<T>): Resource<T> where T : ResponseModel {
             Resource.Error(message = response.body()?.message)
         }
         response.isSuccessful -> {
-            println()
-            Log.wtf("message",response.body()?.message)
-            Log.wtf("status",response.body()?.status)
-            println()
             Resource.Success(response.body()!!)
         }
         else -> {
