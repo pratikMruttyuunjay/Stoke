@@ -29,12 +29,10 @@ inline fun <reified T : Enum<T>> Bundle.putEnum(key: String, value: T) {
 }
 
 internal fun ProductFragment.navigateToAdd(
-    productTitle: String? = null,
-    productId: String? = null
+    categoryId: String
 ) {
     val bundle = bundleOf(
-        "productTitle" to productTitle,
-        "productId" to productId,
+        "categoryId" to categoryId,
         "from" to 1,
     )
     findNavController().navigate(
@@ -56,12 +54,39 @@ internal fun CategoryFragment.navigateToAdd(
     )
 }
 
-internal fun BatchFragment.navigateToAdd() {
+internal fun BatchFragment.navigateToAdd(aPId:String) {
     val bundle = bundleOf(
+        "productId" to aPId,
         "from" to 3
     )
     findNavController().navigate(
         R.id.action_BatchFragment_to_AddFragment,
+        bundle,
+        popupTo()
+    )
+}
+
+internal fun CategoryFragment.navigateToProduct(
+    categoryId:String
+) {
+    val bundle = bundleOf(
+        "categoryId" to categoryId
+    )
+    findNavController().navigate(
+        R.id.action_CategoryFragment_to_ProductFragment,
+        bundle,
+        popupTo()
+    )
+}
+
+internal fun ProductFragment.navigateToBatch(
+    productId:String
+) {
+    val bundle = bundleOf(
+        "productId" to productId
+    )
+    findNavController().navigate(
+        R.id.action_ProductFragment_to_BatchFragment,
         bundle,
         popupTo()
     )

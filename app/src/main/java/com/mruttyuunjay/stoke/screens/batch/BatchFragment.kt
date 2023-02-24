@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.mruttyuunjay.stoke.databinding.FragmentBatchBinding
 import com.mruttyuunjay.stoke.utils.Resource
@@ -35,17 +36,22 @@ class BatchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val aPId = arguments?.getString("productId") ?: ""
+
         binding.add.setOnClickListener {
-            navigateToAdd()
+            navigateToAdd(aPId)
+        }
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         batchAdapter = BatchListingAdapter(
-            fragment = this,
             onClick = {},
             onLongClick = { onLongClick->
                 UiHelper.updateDialog(
                     context = requireActivity(),
                     from = UiHelper.updateFrom.Batch,
+                    txt=onLongClick.title,
                     onUpdateClick = {title,dialog ->
                         updateBatch(batchId = onLongClick.id, title = title, dialog = dialog)
                     },
@@ -53,6 +59,25 @@ class BatchFragment : Fragment() {
 
                     },
                 )
+            },
+            addQty = { id,defaultQty ->
+                UiHelper.qtyDialog(requireContext(),UiHelper.Qty.Inc,defaultQty.toString(),
+                onUpdateClick = {
+                    addQty(batchId = id, qty = defaultQty.plus(it))
+                },
+                onDismiss = {
+
+                })
+
+            },
+            minusQty = {id,defaultQty ->
+                UiHelper.qtyDialog(requireContext(),UiHelper.Qty.Dec,defaultQty.toString(),
+                    onUpdateClick = {
+                        minusQty(batchId = id,qty=defaultQty.minus(it))
+                    },
+                    onDismiss = {
+
+                    })
             }
         )
         binding.rvBatchList.adapter = batchAdapter
@@ -61,43 +86,39 @@ class BatchFragment : Fragment() {
 
     private fun initFetch() {
 
-        if (vm.batchList.value == null) vm.onEvent(BatchEvents.BatchList)
+      vm.onEvent(BatchEvents.BatchList)
 
         vm.batchList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        UiHelper.loadingDialogBuilder.dismissSafe()
+                        binding.progress.visibility = View.GONE
                         batchAdapter.setCommonData(it)
-                        Log.d("batchList",response.message.toString())
                     }
                 }
                 is Resource.Error -> {
-//                    UiHelper.loadingDialogBuilder.dismissSafe()
+                    binding.progress.visibility = View.GONE
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
                 is Resource.Loading -> {
-//                    UiHelper.loadingDialog(requireContext())
+                    binding.progress.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-     fun addQty (batchId: String,qty:String,progress:CircularProgressIndicator){
+     private fun addQty (batchId: String,qty:Int){
 
-         Log.d("addQty", qty)
-       vm.onEvent(BatchEvents.AddQty(batch_id = batchId, qty = qty))
+         Log.d("addQty", qty.toString())
+       vm.onEvent(BatchEvents.AddQty(batch_id = batchId, qty = qty.toString()))
 
         vm.addQty.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-                        progress.visibility = View.GONE
                         vm.batchList.value = null
                         initFetch()
-                        Log.d("addQty",response.data.data.toString())
-                        Log.d("addQty",response.message.toString())
                     }
                 }
                 is Resource.Error -> {
@@ -105,15 +126,14 @@ class BatchFragment : Fragment() {
                         .show()
                 }
                 is Resource.Loading -> {
-                    progress.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    fun minusQty (batchId: String,qty:String){
-
-         vm.onEvent(BatchEvents.MinusQty(batch_id = batchId, qty = qty))
+    private fun minusQty (batchId: String, qty:Int){
+        Log.d("minusQty", qty.toString())
+         vm.onEvent(BatchEvents.MinusQty(batch_id = batchId, qty = qty.toString()))
 
         vm.minusQty.observe(viewLifecycleOwner) { response ->
             when (response) {
@@ -121,8 +141,6 @@ class BatchFragment : Fragment() {
                     response.data?.let {
                         vm.batchList.value = null
                         initFetch()
-                        Log.d("addQty",response.data.data.toString())
-                        Log.d("addQty",response.message.toString())
                     }
                 }
                 is Resource.Error -> {
@@ -135,25 +153,22 @@ class BatchFragment : Fragment() {
     }
 
     private fun updateBatch(batchId:String,title:String,dialog: Dialog){
-        if (vm.batchUpdate.value == null) vm.onEvent(BatchEvents.BatchUpdate(batch_id = batchId, title = title))
+       vm.onEvent(BatchEvents.BatchUpdate(batch_id = batchId, title = title))
 
         vm.batchUpdate.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        UiHelper.loadingDialogBuilder.dismissSafe()
                         dialog.dismiss()
                         vm.batchList.value = null
                         initFetch()
                     }
                 }
                 is Resource.Error -> {
-//                    UiHelper.loadingDialogBuilder.dismissSafe()
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
                 is Resource.Loading -> {
-//                    UiHelper.loadingDialog(requireContext())
                 }
             }
         }

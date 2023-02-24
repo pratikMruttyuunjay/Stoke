@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mruttyuunjay.stoke.databinding.FragmentProductBinding
 import com.mruttyuunjay.stoke.databinding.LayoutUpdateBinding
 import com.mruttyuunjay.stoke.utils.Resource
 import com.mruttyuunjay.stoke.utils.UiHelper
 import com.mruttyuunjay.stoke.utils.navigateToAdd
+import com.mruttyuunjay.stoke.utils.navigateToBatch
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,17 +40,25 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val aCId = arguments?.getString("categoryId") ?: ""
+
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         binding.add.setOnClickListener {
-            navigateToAdd()
+            navigateToAdd(aCId)
         }
 
         productAdapter = ProductListingAdapter({ onClick ->
+            navigateToBatch(onClick.id)
         }) { onLongClick ->
             UiHelper.updateDialog(
                 context = requireActivity(),
                 from = UiHelper.updateFrom.Product,
-                onUpdateClick = { title,dialog ->
-                    updateProduct(productId = onLongClick.id, title = title, dialog = dialog )
+                txt = onLongClick.title,
+                onUpdateClick = { title, dialog ->
+                    updateProduct(productId = onLongClick.id, title = title, dialog = dialog)
                 },
                 onDismiss = {
 
@@ -62,30 +72,37 @@ class ProductFragment : Fragment() {
 
     private fun initFetch() {
 
-        if (vm.productList.value == null) vm.onEvent(ProductEvents.PostProductList)
+//        if (vm.productList.value == null) vm.onEvent(ProductEvents.PostProductList)
+        vm.onEvent(ProductEvents.PostProductList)
 
         vm.productList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        UiHelper.loadingDialogBuilder.dismissSafe()
+                        binding.progress.visibility = View.GONE
                         productAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
-//                    UiHelper.loadingDialogBuilder.dismissSafe()
+                    binding.progress.visibility = View.GONE
+
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
                 is Resource.Loading -> {
-//                    UiHelper.loadingDialog(requireContext())
+                    binding.progress.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun updateProduct(productId:String,title:String,dialog: Dialog){
-        if (vm.productUpdate.value == null) vm.onEvent(ProductEvents.PostProductUpdate(product_id = productId, title = title))
+    private fun updateProduct(productId: String, title: String, dialog: Dialog) {
+       vm.onEvent(
+            ProductEvents.PostProductUpdate(
+                product_id = productId,
+                title = title
+            )
+        )
 
         vm.productUpdate.observe(viewLifecycleOwner) { response ->
             when (response) {

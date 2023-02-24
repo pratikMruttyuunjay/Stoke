@@ -1,6 +1,7 @@
 package com.mruttyuunjay.stoke.screens.product
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +29,12 @@ class ProductListingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        holder.binding.noOfProduct.visibility = View.VISIBLE
         with(holder) {
             with(mList[position]) {
                 binding.title.text = this.title
+                binding.noOfProduct.text = this.total_product
             }
         }
 

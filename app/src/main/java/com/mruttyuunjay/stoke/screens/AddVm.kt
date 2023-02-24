@@ -40,7 +40,7 @@ class AddVm @Inject constructor(
                             category_id = events.category_id,
                             title = events.title
                         )
-                        Log.wtf("#PostProductAdd: Body.data", response.body()?.data.toString())
+                        Log.wtf("#ProductAdd: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _productAdd.value = getBody
                     } catch (e: Exception) {
@@ -70,7 +70,7 @@ class AddVm @Inject constructor(
                             title = events.title,
                             qty = events.qty
                         )
-                        Log.wtf("#PostProductList: Body.data", response.body()?.data.toString())
+                        Log.wtf("#BatchAdd: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _batchAdd.value = getBody
                     } catch (e: Exception) {

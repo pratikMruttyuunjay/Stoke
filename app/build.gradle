@@ -16,14 +16,15 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -57,7 +58,6 @@ dependencies {
     implementation "androidx.core:core-splashscreen:1.0.0"
 
     implementation "com.google.code.gson:gson:2.9.1"
-    implementation "androidx.preference:preference-ktx:1.2.0"
 
     // Retrofit + GSON
     def retrofit_version = "2.9.0"
@@ -68,8 +68,6 @@ dependencies {
     def coroutines_version = "1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-
-    implementation 'org.imaginativeworld.oopsnointernet:oopsnointernet:2.0.0'
 
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
     implementation 'cat.ereza:customactivityoncrash:2.4.0'

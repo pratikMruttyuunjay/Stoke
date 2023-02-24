@@ -15,9 +15,10 @@ import com.mruttyuunjay.stoke.utils.CommonDiff
 
 
 class BatchListingAdapter(
-    private val fragment: BatchFragment,
     private val onClick: (BatchListData) -> Unit,
-    private val onLongClick: (BatchListData) -> Unit
+    private val onLongClick: (BatchListData) -> Unit,
+    private val addQty:(id:String,defaultQty:Int)-> Unit,
+    private val minusQty:(id:String,defaultQty:Int)-> Unit
 ) : RecyclerView.Adapter<BatchListingAdapter.ViewHolder>() {
 
     var mList: ArrayList<BatchListData> = ArrayList()
@@ -47,17 +48,14 @@ class BatchListingAdapter(
 //            onClick.invoke(listWithPosition)
         }
 
-        val qty = listWithPosition.qty.toInt().inc()
+        val qty = listWithPosition.qty
 
         holder.binding.addQty.setOnClickListener {
-//            holder.binding.progress.visibility = View.VISIBLE
-            fragment.addQty(listWithPosition.id, qty = qty.toString(), progress = holder.binding.progress)
-//            holder.binding.qty.text = listWithPosition.qty
-            Log.wtf("qty",qty.toString())
+            addQty.invoke(listWithPosition.id, qty.toInt())
         }
 
         holder.binding.minQty.setOnClickListener {
-            fragment.minusQty(listWithPosition.id, qty = qty.dec().toString())
+            minusQty.invoke(listWithPosition.id,qty.toInt())
         }
 
         holder.binding.root.setOnLongClickListener {

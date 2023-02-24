@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/ProductFragment">
+    app:startDestination="@id/CategoryFragment">
 
     <fragment
         android:id="@+id/ProductFragment"
@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_ProductFragment_to_AddFragment"
             app:destination="@id/AddFragment" />
+        <action
+            android:id="@+id/action_ProductFragment_to_BatchFragment"
+            app:destination="@id/BatchFragment" />
     </fragment>
 
     <fragment
@@ -23,6 +26,9 @@
         <action
             android:id="@+id/action_CategoryFragment_to_AddFragment"
             app:destination="@id/AddFragment" />
+        <action
+            android:id="@+id/action_CategoryFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment" />
     </fragment>
     <fragment
         android:id="@+id/AddFragment"

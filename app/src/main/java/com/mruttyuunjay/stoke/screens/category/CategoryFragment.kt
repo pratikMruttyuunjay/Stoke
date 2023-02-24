@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mruttyuunjay.stoke.databinding.FragmentCategoryBinding
 import com.mruttyuunjay.stoke.screens.product.ProductEvents
 import com.mruttyuunjay.stoke.screens.product.ProductListingAdapter
 import com.mruttyuunjay.stoke.utils.Resource
 import com.mruttyuunjay.stoke.utils.UiHelper
 import com.mruttyuunjay.stoke.utils.navigateToAdd
+import com.mruttyuunjay.stoke.utils.navigateToProduct
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +24,7 @@ class CategoryFragment : Fragment() {
 
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
-    private val vm :CategoryVm by viewModels()
+    private val vm: CategoryVm by viewModels()
     private lateinit var categoryAdapter: CategoryListingAdapter
 
     override fun onCreateView(
@@ -43,11 +45,13 @@ class CategoryFragment : Fragment() {
         }
 
         categoryAdapter = CategoryListingAdapter({ onClick ->
+            navigateToProduct(onClick.id)
         }) { onLongClick ->
             UiHelper.updateDialog(
                 context = requireActivity(),
+                txt = onLongClick.title,
                 from = UiHelper.updateFrom.Category,
-                onUpdateClick = { title,dialog ->
+                onUpdateClick = { title, dialog ->
                     updateCategory(categoryId = onLongClick.id, title = title, dialog = dialog)
                 },
                 onDismiss = {
@@ -61,30 +65,35 @@ class CategoryFragment : Fragment() {
 
     private fun initFetch() {
 
-        if (vm.categoryList.value == null) vm.onEvent(CategoryEvents.CategoryList)
+//        if (vm.categoryList.value == null) vm.onEvent(CategoryEvents.CategoryList)
+        vm.onEvent(CategoryEvents.CategoryList)
 
         vm.categoryList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        UiHelper.loadingDialogBuilder.dismissSafe()
+                        binding.progress.visibility = View.GONE
                         categoryAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
-//                    UiHelper.loadingDialogBuilder.dismissSafe()
+                    binding.progress.visibility = View.GONE
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
                 is Resource.Loading -> {
-//                    UiHelper.loadingDialog(requireContext())
+                    binding.progress.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun updateCategory(categoryId:String,title:String,dialog: Dialog){
-        if (vm.categoryUpdate.value == null) vm.onEvent(CategoryEvents.CategoryUpdate(category_id = categoryId, title = title))
+    private fun updateCategory(categoryId: String, title: String, dialog: Dialog) {
+        vm.onEvent(
+            CategoryEvents.CategoryUpdate(
+                category_id = categoryId, title = title
+            )
+        )
 
         vm.categoryUpdate.observe(viewLifecycleOwner) { response ->
             when (response) {
@@ -92,7 +101,7 @@ class CategoryFragment : Fragment() {
                     response.data?.let {
 //                        UiHelper.loadingDialogBuilder.dismissSafe()
                         dialog.dismiss()
-                        vm.categoryList.value = null
+//                        vm.categoryList.value = null
                         initFetch()
                     }
                 }

@@ -40,7 +40,7 @@ class BatchVm @Inject constructor(
                     _batchList.value = Resource.Loading()
                     try {
                         val response = repos.postBatchList()
-                        Log.wtf("#PostProductList: Body.data", response.body()?.data.toString())
+                        Log.wtf("#BatchList: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _batchList.value = getBody
                     } catch (e: Exception) {
@@ -54,7 +54,7 @@ class BatchVm @Inject constructor(
                     try {
                         val response =
                             repos.postBatchUpdate(batch_id = events.batch_id, title = events.title)
-                        Log.wtf("#PostProductList: Body.data", response.body()?.data.toString())
+                        Log.wtf("#BatchUpdate: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _batchUpdate.value = getBody
                     } catch (e: Exception) {
@@ -71,6 +71,7 @@ class BatchVm @Inject constructor(
                             batch_id = events.batch_id,
                             qty = events.qty
                         )
+                        Log.wtf("#MinusQty: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _addQty.value = getBody
                     } catch (e: Exception) {
@@ -86,7 +87,7 @@ class BatchVm @Inject constructor(
                             batch_id = events.batch_id,
                             qty = events.qty
                         )
-                        Log.wtf("#PostProductList: Body.data", response.body()?.data.toString())
+                        Log.wtf("#MinusQty: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _minusQty.value = getBody
                     } catch (e: Exception) {
