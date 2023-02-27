@@ -27,6 +27,7 @@ class ProductFragment : Fragment() {
 
     private val vm: ProductVm by viewModels()
     private lateinit var productAdapter: ProductListingAdapter
+    lateinit var aCId :String
 
 
     override fun onCreateView(
@@ -40,7 +41,7 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val aCId = arguments?.getString("categoryId") ?: ""
+        aCId = arguments?.getString("categoryId") ?: ""
 
         binding.back.setOnClickListener {
             findNavController().popBackStack()
@@ -73,21 +74,25 @@ class ProductFragment : Fragment() {
     private fun initFetch() {
 
 //        if (vm.productList.value == null) vm.onEvent(ProductEvents.PostProductList)
-        vm.onEvent(ProductEvents.PostProductList)
+        vm.onEvent(ProductEvents.PostProductList(aCId))
 
         vm.productList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
+
+                        if (it.data.isEmpty()){
+                            binding.notFound.visibility  = View.VISIBLE
+                            return@observe
+                        }
+
                         productAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
-
-                    Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
-                        .show()
+                    Log.wtf("ProductList","Error: ${response.message}")
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE
@@ -110,17 +115,15 @@ class ProductFragment : Fragment() {
                     response.data?.let {
 //                        UiHelper.loadingDialogBuilder.dismissSafe()
                         dialog.dismiss()
-                        vm.productList.value = null
+//                        vm.productList.value = null
                         initFetch()
                     }
                 }
                 is Resource.Error -> {
-//                    UiHelper.loadingDialogBuilder.dismissSafe()
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
                 is Resource.Loading -> {
-//                    UiHelper.loadingDialog(requireContext())
                 }
             }
         }

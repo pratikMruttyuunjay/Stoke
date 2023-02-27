@@ -20,12 +20,11 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class Rds @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val ends: Ends
 ) {
 
-    suspend fun postProductList(): Response<ProductList> {
-        return withContext(Dispatchers.IO) { ends.postProductList("productList", status = "1") }
+    suspend fun postProductList(category_id:String): Response<ProductList> {
+        return withContext(Dispatchers.IO) { ends.postProductList("productList", status = "1", category_id = category_id) }
     }
 
     suspend fun postProductAdd(category_id: String, title: String): Response<ProductAdd> {
@@ -63,8 +62,8 @@ class Rds @Inject constructor(
         }
     }
 
-    suspend fun postBatchList(): Response<BatchList> {
-        return withContext(Dispatchers.IO) { ends.postBatchList("batchList") }
+    suspend fun postBatchList(product_id:String): Response<BatchList> {
+        return withContext(Dispatchers.IO) { ends.postBatchList("batchList",product_id) }
     }
 
     suspend fun postBatchAdd(

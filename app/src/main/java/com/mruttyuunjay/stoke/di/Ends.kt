@@ -39,6 +39,7 @@ interface Ends {
     suspend fun postProductList(
         @Field("action") action: String,
         @Field("status") status: String,
+        @Field("category_id") category_id: String,
     ): Response<ProductList>
 
 
@@ -72,6 +73,7 @@ interface Ends {
     @POST(Constants.ROOT)
     suspend fun postBatchList(
         @Field("action") action: String,
+        @Field("product_id") product_id: String
     ): Response<BatchList>
 
     @FormUrlEncoded

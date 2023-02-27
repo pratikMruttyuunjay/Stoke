@@ -35,11 +35,11 @@ class BatchVm @Inject constructor(
 
     fun onEvent(events: BatchEvents) {
         when (events) {
-            BatchEvents.BatchList -> {
+           is BatchEvents.BatchList -> {
                 viewModelScope.launch {
                     _batchList.value = Resource.Loading()
                     try {
-                        val response = repos.postBatchList()
+                        val response = repos.postBatchList(events.product_id)
                         Log.wtf("#BatchList: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _batchList.value = getBody

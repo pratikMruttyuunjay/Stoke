@@ -63,7 +63,7 @@ class AddFragment : Fragment() {
         binding.apply {
             when (aFrom) {
                 1 -> {
-                    initCategory()
+//                    initCategory()
                     "Add Product".apply {
                         toolbarHeading.text = this
                         addBtn.text = this
@@ -76,7 +76,7 @@ class AddFragment : Fragment() {
                     }
                 }
                 3 -> {
-                    initProduct()
+//                    initProduct()
                     "Add Batch".apply {
                         addBtn.text = this
                         toolbarHeading.text = this
@@ -98,55 +98,55 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun initProduct() {
-
-        if (pVm.productList.value == null) pVm.onEvent(ProductEvents.PostProductList)
-
-        pVm.productList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is Resource.Success -> {
-                    Log.d("ProductList", "Product Fetched")
-                    if (response.data != null) {
-//                        productList = response.data.data
-                    } else {
-                        Toast.makeText(requireContext(), "Product Data is null", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
-                is Resource.Loading -> {
-
-                }
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-
-    private fun initCategory() {
-
-        if (cVm.categoryList.value == null) cVm.onEvent(CategoryEvents.CategoryList)
-
-        cVm.categoryList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is Resource.Success -> {
-                    Log.d("Category List", "Category Fetched")
-                    if (response.data != null) {
-//                        categoryList = response.data.data
-                    } else {
-                        Toast.makeText(requireContext(), "Category Data is null", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
-                is Resource.Loading -> {
-
-                }
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
+//    private fun initProduct() {
+//
+//        if (pVm.productList.value == null) pVm.onEvent(ProductEvents.PostProductList())
+//
+//        pVm.productList.observe(viewLifecycleOwner) { response ->
+//            when (response) {
+//                is Resource.Success -> {
+//                    Log.d("ProductList", "Product Fetched")
+//                    if (response.data != null) {
+////                        productList = response.data.data
+//                    } else {
+//                        Toast.makeText(requireContext(), "Product Data is null", Toast.LENGTH_LONG)
+//                            .show()
+//                    }
+//                }
+//                is Resource.Loading -> {
+//
+//                }
+//                is Resource.Error -> {
+//                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun initCategory() {
+//
+//        if (cVm.categoryList.value == null) cVm.onEvent(CategoryEvents.CategoryList)
+//
+//        cVm.categoryList.observe(viewLifecycleOwner) { response ->
+//            when (response) {
+//                is Resource.Success -> {
+//                    Log.d("Category List", "Category Fetched")
+//                    if (response.data != null) {
+////                        categoryList = response.data.data
+//                    } else {
+//                        Toast.makeText(requireContext(), "Category Data is null", Toast.LENGTH_LONG)
+//                            .show()
+//                    }
+//                }
+//                is Resource.Loading -> {
+//
+//                }
+//                is Resource.Error -> {
+//                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
+//    }
 
     private fun initAdd(
         product_id: String? = null,

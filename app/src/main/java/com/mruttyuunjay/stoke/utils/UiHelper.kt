@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.WindowManager
+import android.widget.Toast
 import com.mruttyuunjay.stoke.R
 import com.mruttyuunjay.stoke.databinding.LayoutQtyDialogBinding
 import com.mruttyuunjay.stoke.databinding.LayoutUpdateBinding
@@ -118,8 +119,13 @@ object UiHelper {
             dialog.dismiss()
         }
         vb.updateBtn.setOnClickListener {
-            onUpdateClick.invoke(vb.qtyValue.text.toString().toInt())
-            dialog.dismiss()
+            val qtyValue = vb.qtyValue.text.toString()
+            if (qtyValue.isEmpty()){
+                Toast.makeText(context,"Please Add Quantity",Toast.LENGTH_LONG).show()
+            }else {
+                onUpdateClick.invoke(qtyValue.toInt())
+                dialog.dismiss()
+            }
         }
 
         // Set the dialog window attributes

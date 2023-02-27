@@ -24,6 +24,7 @@ class BatchFragment : Fragment() {
     private val binding get() = _binding!!
     private val vm : BatchVm by viewModels()
     private lateinit var batchAdapter: BatchListingAdapter
+    lateinit var aPId:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +37,7 @@ class BatchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val aPId = arguments?.getString("productId") ?: ""
+        aPId = arguments?.getString("productId") ?: ""
 
         binding.add.setOnClickListener {
             navigateToAdd(aPId)
@@ -86,20 +87,24 @@ class BatchFragment : Fragment() {
 
     private fun initFetch() {
 
-      vm.onEvent(BatchEvents.BatchList)
+      vm.onEvent(BatchEvents.BatchList(aPId))
 
         vm.batchList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
+                        if (it.data.isEmpty()){
+                            binding.notFound.visibility  = View.VISIBLE
+                            return@observe
+                        }
                         batchAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
-                    Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
-                        .show()
+
+                    Log.wtf("BatchList","Error ${response.message}")
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE
@@ -117,8 +122,7 @@ class BatchFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-                        vm.batchList.value = null
-                        initFetch()
+//                        vm.batchList.value = null
                     }
                 }
                 is Resource.Error -> {
@@ -139,8 +143,7 @@ class BatchFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-                        vm.batchList.value = null
-                        initFetch()
+//                        vm.batchList.value = null
                     }
                 }
                 is Resource.Error -> {
@@ -160,8 +163,7 @@ class BatchFragment : Fragment() {
                 is Resource.Success -> {
                     response.data?.let {
                         dialog.dismiss()
-                        vm.batchList.value = null
-                        initFetch()
+                       initFetch()
                     }
                 }
                 is Resource.Error -> {

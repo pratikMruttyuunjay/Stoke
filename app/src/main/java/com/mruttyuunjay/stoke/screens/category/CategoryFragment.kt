@@ -73,13 +73,16 @@ class CategoryFragment : Fragment() {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
+                        if (it.data.isEmpty()){
+                            binding.notFound.visibility  = View.VISIBLE
+                            return@observe
+                        }
                         categoryAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
-                    Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
-                        .show()
+                    Log.wtf("CategoryList","Error ${response.message}")
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE

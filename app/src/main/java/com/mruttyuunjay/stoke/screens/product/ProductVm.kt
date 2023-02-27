@@ -28,11 +28,11 @@ class ProductVm @Inject constructor(
     fun onEvent(event: ProductEvents) {
 
         when (event) {
-            ProductEvents.PostProductList -> {
+           is ProductEvents.PostProductList -> {
                 viewModelScope.launch {
                     _productList.value = Resource.Loading()
                     try {
-                        val response = repos.postProductList()
+                        val response = repos.postProductList(event.category_id)
                         Log.wtf("#PostProductList: Body.data", response.body()?.data.toString())
                         val getBody = response(response)
                         _productList.value = getBody
