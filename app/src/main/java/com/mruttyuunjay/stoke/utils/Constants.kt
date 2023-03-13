@@ -8,5 +8,4 @@ class Constants {
         const val BASEURL = "https://stoke.mruttyuunjay.com/"
         const val ROOT = "/"
     }
-
 }

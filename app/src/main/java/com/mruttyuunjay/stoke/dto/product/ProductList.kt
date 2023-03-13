@@ -9,10 +9,10 @@ data class ProductList(
 ): ResponseModel
 
 data class ProductListData(
-    val created_at: String,
     val id: String,
-    val status: String,
     val title: String,
+    val status: String,
+    val created_at: String,
     val total_product: String,
     val updated_at: String
 )

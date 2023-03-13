@@ -43,6 +43,10 @@ class ProductFragment : Fragment() {
 
         aCId = arguments?.getString("categoryId") ?: ""
 
+        binding.swipe.setOnRefreshListener {
+            initFetch()
+            binding.swipe.isRefreshing = false
+        }
         binding.back.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -81,18 +85,16 @@ class ProductFragment : Fragment() {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
-
-                        if (it.data.isEmpty()){
-                            binding.notFound.visibility  = View.VISIBLE
-                            return@observe
-                        }
-
                         productAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
                     Log.wtf("ProductList","Error: ${response.message}")
+                    if (response.message?.contains("Product Details not Found") == true){
+                        binding.notFound.visibility  = View.VISIBLE
+                        return@observe
+                    }
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.Toast
 import com.mruttyuunjay.stoke.R
+import com.mruttyuunjay.stoke.databinding.LayoutMinusVerifBinding
 import com.mruttyuunjay.stoke.databinding.LayoutQtyDialogBinding
 import com.mruttyuunjay.stoke.databinding.LayoutUpdateBinding
 
@@ -136,6 +137,33 @@ object UiHelper {
         dialog.window?.attributes = layoutParams
 
         dialog.setCancelable(false)
+        dialog.show()
+    }
+
+    fun qtyMinusVerif(
+        context:Context,
+//        onUpdateClick: (qty:Int) -> Unit,
+//        onDismiss: () -> Unit
+    ) {
+
+        val dialog = Dialog(context)
+
+        val vb = LayoutMinusVerifBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(vb.root)
+
+        vb.btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+
+        // Set the dialog window attributes
+        val layoutParams = WindowManager.LayoutParams()
+        layoutParams.copyFrom(dialog.window?.attributes)
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.window?.attributes = layoutParams
+
+        dialog.setCancelable(true)
         dialog.show()
     }
 

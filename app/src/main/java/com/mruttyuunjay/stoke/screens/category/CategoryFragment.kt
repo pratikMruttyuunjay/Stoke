@@ -44,6 +44,11 @@ class CategoryFragment : Fragment() {
             navigateToAdd()
         }
 
+        binding.swipe.setOnRefreshListener {
+            initFetch()
+            binding.swipe.isRefreshing = false
+        }
+
         categoryAdapter = CategoryListingAdapter({ onClick ->
             navigateToProduct(onClick.id)
         }) { onLongClick ->
@@ -73,16 +78,16 @@ class CategoryFragment : Fragment() {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
-                        if (it.data.isEmpty()){
-                            binding.notFound.visibility  = View.VISIBLE
-                            return@observe
-                        }
                         categoryAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
                     Log.wtf("CategoryList","Error ${response.message}")
+                    if (response.message?.contains("Category Details not Found") == true){
+                        binding.notFound.visibility  = View.VISIBLE
+                        return@observe
+                    }
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE

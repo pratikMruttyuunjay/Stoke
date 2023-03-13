@@ -39,6 +39,11 @@ class BatchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         aPId = arguments?.getString("productId") ?: ""
 
+        binding.swipe.setOnRefreshListener {
+            initFetch()
+            binding.swipe.isRefreshing = false
+        }
+
         binding.add.setOnClickListener {
             navigateToAdd(aPId)
         }
@@ -69,12 +74,15 @@ class BatchFragment : Fragment() {
                 onDismiss = {
 
                 })
-
             },
             minusQty = {id,defaultQty ->
                 UiHelper.qtyDialog(requireContext(),UiHelper.Qty.Dec,defaultQty.toString(),
                     onUpdateClick = {
-                        minusQty(batchId = id,qty=defaultQty.minus(it))
+                        if (defaultQty < it){
+                            UiHelper.qtyMinusVerif(requireContext())
+                        }else {
+                            minusQty(batchId = id,qty=defaultQty.minus(it))
+                        }
                     },
                     onDismiss = {
 
@@ -87,24 +95,22 @@ class BatchFragment : Fragment() {
 
     private fun initFetch() {
 
-      vm.onEvent(BatchEvents.BatchList(aPId))
-
+        vm.onEvent(BatchEvents.BatchList(aPId))
         vm.batchList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
                         binding.progress.visibility = View.GONE
-                        if (it.data.isEmpty()){
-                            binding.notFound.visibility  = View.VISIBLE
-                            return@observe
-                        }
                         batchAdapter.setCommonData(it)
                     }
                 }
                 is Resource.Error -> {
                     binding.progress.visibility = View.GONE
-
                     Log.wtf("BatchList","Error ${response.message}")
+                    if (response.message?.contains("Batch Details not Found") == true){
+                        binding.notFound.visibility  = View.VISIBLE
+                        return@observe
+                    }
                 }
                 is Resource.Loading -> {
                     binding.progress.visibility = View.VISIBLE
@@ -122,7 +128,7 @@ class BatchFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        vm.batchList.value = null
+                      initFetch()
                     }
                 }
                 is Resource.Error -> {
@@ -143,7 +149,7 @@ class BatchFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
-//                        vm.batchList.value = null
+                      initFetch()
                     }
                 }
                 is Resource.Error -> {
@@ -162,16 +168,15 @@ class BatchFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let {
+                        initFetch()
                         dialog.dismiss()
-                       initFetch()
                     }
                 }
                 is Resource.Error -> {
                     Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG)
                         .show()
                 }
-                is Resource.Loading -> {
-                }
+                is Resource.Loading -> {}
             }
         }
     }

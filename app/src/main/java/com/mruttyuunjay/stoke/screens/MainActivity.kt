@@ -1,6 +1,7 @@
 package com.mruttyuunjay.stoke.screens
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -17,16 +18,21 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mruttyuunjay.stoke.R
 import com.mruttyuunjay.stoke.databinding.ActivityMainBinding
+import com.mruttyuunjay.stoke.security.SecureActivityDelegate
+import com.mruttyuunjay.stoke.security.SecureActivityDelegateImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),  SecureActivityDelegate by SecureActivityDelegateImpl() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 //    lateinit var navController: NavController
     lateinit var myNavHostFragment: NavHostFragment
-
+    init {
+        registerSecureActivity(this)
+        Log.d("SecureActivityDelegate", "pass activity from MainActivity")
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
